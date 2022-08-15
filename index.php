@@ -1,4 +1,12 @@
 <?
+  function get_title($url){
+    $str = file_get_contents($url);
+    if(strlen($str)>0){
+      $str = trim(preg_replace('/\s+/', ' ', $str));
+      preg_match("/\<title\>(.*)\<\/title\>/i",$str,$title);
+      return $title[1];
+    }
+  }
   function decToAlpha($val){
     $alphabet="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     $ret="";
@@ -42,7 +50,18 @@
 <!DOCTYPE html>
 <html>
   <? if($redirect) { ?>
-    <head></head>
+    <head>
+      <?
+        $meta = get_meta_tags($target);
+        $title = get_title($target);
+      ?>
+      <meta charset="UTF-8">
+      <meta name="description" content="<?=$meta['description']?>">
+      <meta name="keywords" content="<?=$meta['keywords']?>">
+      <meta name="author" content="<?=$meta['author']?>">
+      <meta name="viewport" content="<?=$meta['viewport']?>">
+      <title><?=$title?></title>
+    </head>
     <body>
       <script>
         target = '<?=$target?>'
