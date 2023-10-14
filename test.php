@@ -1,8 +1,15 @@
-<?
-  require('db.php');
-  $sql = 'SELECT * FROM links WHERE BINARY target = "https://audiocloud.whitehot.ninja/track/2wkp"';
-  $res = mysqli_query($link, $sql);
-  $row = mysqli_fetch_assoc($res);
-  echo "id: {$row['id']}\n";
-  echo mysqli_num_rows($res) . "\n";
+<?php
+  function alphaToDec($val){
+    $pow=0;
+    $res=0;
+    while($val!=""){
+      $cur=$val[strlen($val)-1];
+      $val=substr($val,0,strlen($val)-1);
+      $mul=ord($cur)<58?$cur:ord($cur)-(ord($cur)>96?87:29);
+      $res+=$mul*pow(62,$pow);
+      $pow++;
+    }
+    return $res;
+  }
+  echo alphaToDec('npp');
 ?>

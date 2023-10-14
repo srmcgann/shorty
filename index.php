@@ -1,10 +1,10 @@
-<?
+<?php
   function get_title($url){
     $str = file_get_contents($url);
     if(strlen($str)>0){
       $str = trim(preg_replace('/\s+/', ' ', $str));
-      preg_match("/\<title\>(.*)\<\/title\>/i",$str,$title);
-      return $title[1];
+      preg_match("/\<title\>(.*)\<\/title\>/i", $str, $title);
+      return sizeof($title) > 1 ? $title[1] : '';
     }
   }
   function decToAlpha($val){
@@ -33,45 +33,48 @@
     return $res;
   }
 
-	$slug=$_GET['slug'];
+	$slug=isset($_GET['slug']) ? $_GET['slug'] : '';
   $redirect=true;
 	if(!$slug){
     //echo 'no slug!';
 		//die();
     $redirect = false;
+  }else{
+    require('db.php');
+	  $id = alphaToDec($slug);
+	  $sql = "SELECT * FROM links WHERE id = $id";
+	  $res = mysqli_query($link, $sql);
+	  $row = mysqli_fetch_assoc($res);
+	  $target = $row['target'];
   }
-  require('db.php');
-	$id = alphaToDec($slug);
-	$sql = "SELECT * FROM links WHERE id = $id";
-	$res = mysqli_query($link, $sql);
-	$row = mysqli_fetch_assoc($res);
-	$target = $row['target'];
 ?>
 <!DOCTYPE html>
 <html>
-  <? if($redirect) { ?>
+  <?php if($redirect) { ?>
     <head>
-      <?
-        $meta = get_meta_tags($target);
+      <?php
         $title = get_title($target);
+        if($title){
+          $meta = get_meta_tags($target);
+          echo "<meta charset=\"UTF-8\">";
+          echo "<meta name=\"description\" content=\"{$meta['description']}\">";
+          echo "<meta name=\"keywords\" content=\"{$meta['keywords']}\">";
+          echo "<meta name=\"author\" content=\"{$meta['author']}\">";
+          echo "<meta name=\"viewport\" content=\"{$meta['viewport']}\">";
+          echo "<title>$title</title>";
+        }
       ?>
-      <meta charset="UTF-8">
-      <meta name="description" content="<?=$meta['description']?>">
-      <meta name="keywords" content="<?=$meta['keywords']?>">
-      <meta name="author" content="<?=$meta['author']?>">
-      <meta name="viewport" content="<?=$meta['viewport']?>">
-      <title><?=$title?></title>
     </head>
     <body>
       <script>
-        target = '<?=$target?>'
-        slug = '<?=$slug?>'
-        id = '<?=$id?>'
+        target = '<?php echo $target?>'
+        slug = '<?php echo $slug?>'
+        id = '<?php echo $id?>'
         console.log(slug, id)
-        if(target) window.location.href=target
+        if(target) window.location.href = target
       </script>
     </body>
-  <? } else { ?>
+  <?php } else { ?>
     <head>
 		  <title></title>
       <style>
@@ -267,7 +270,7 @@
               link.className = 'resultLink'
               link.target = '_blank'
               document.querySelectorAll('.copyButton')[0].style.display='inline-block'
-              link.innerHTML = link.href = window.location.origin + '/' + data
+              link.innerHTML = link.href = window.location.origin + '/shorty/' + data
               resultDiv.innerHTML = 'your link<br><br>'
               resultDiv.appendChild(link)
               targetInput.value = ''
@@ -281,5 +284,5 @@
         }
       </script>
     </body>
-  <? } ?>
+  <?php } ?>
 </html>

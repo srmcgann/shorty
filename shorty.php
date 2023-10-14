@@ -1,4 +1,4 @@
-<?
+<?php
 //ini_set('display_errors', 1);
 //ini_set('display_startup_errors', 1);
 //error_reporting(E_ALL);
@@ -31,7 +31,7 @@ function decToAlpha($val){
   function genSlug($target){
     global $link;
     $target = mysqli_real_escape_string($link, $target);
-		$sql = 'SELECT * FROM BINARY links WHERE target = "'.$target.'"';
+		$sql = 'SELECT * FROM links WHERE BINARY target = "'.$target.'"';
     $res = mysqli_query($link, $sql);
 		if(mysqli_num_rows($res)){
       $row = mysqli_fetch_assoc($res);
