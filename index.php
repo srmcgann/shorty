@@ -57,11 +57,11 @@
         if($title){
           $meta = get_meta_tags($target);
           echo "<meta charset=\"UTF-8\">";
-          echo "<meta name=\"description\" content=\"{$meta['description']}\">";
-          echo "<meta name=\"keywords\" content=\"{$meta['keywords']}\">";
-          echo "<meta name=\"author\" content=\"{$meta['author']}\">";
-          echo "<meta name=\"viewport\" content=\"{$meta['viewport']}\">";
-          echo "<title>$title</title>";
+          if(isset($meta['description'])) echo "<meta name=\"description\" content=\"{$meta['description']}\">";
+          if(isset($meta['keywords'])) echo "<meta name=\"keywords\" content=\"{$meta['keywords']}\">";
+          if(isset($meta['author'])) echo "<meta name=\"author\" content=\"{$meta['author']}\">";
+          if(isset($meta['viewport'])) echo "<meta name=\"viewport\" content=\"{$meta['viewport']}\">";
+          if($title) echo "<title>$title</title>";
         }
       ?>
     </head>
